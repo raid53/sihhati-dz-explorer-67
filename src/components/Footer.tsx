@@ -126,6 +126,12 @@ const Footer = () => {
             <a href="/terms" className="text-muted-foreground hover:text-primary text-sm transition-colors">
               شروط الاستخدام
             </a>
+            <button
+              onClick={() => (window as any).openDisclaimer?.()}
+              className="text-muted-foreground hover:text-primary text-sm transition-colors"
+            >
+              إخلاء المسؤولية القانونية
+            </button>
             <a href="/contact" className="text-muted-foreground hover:text-primary text-sm transition-colors">
               اتصل بنا
             </a>

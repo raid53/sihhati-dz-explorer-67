@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import AdvancedSearch from '@/components/AdvancedSearch';
@@ -9,6 +9,7 @@ import ReviewsSection from '@/components/ReviewsSection';
 import Footer from '@/components/Footer';
 import AuthModal from '@/components/AuthModal';
 import AnimatedBackground from '@/components/AnimatedBackground';
+import { DisclaimerModal } from '@/components/DisclaimerModal';
 import { Heart, Shield, Clock, Users } from 'lucide-react';
 import InteractiveMap from '@/components/InteractiveMap';
 import DeliveryService from '@/components/DeliveryService';
@@ -21,6 +22,14 @@ const Index = () => {
   const { isAuthenticated } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
+  const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+
+  // Listen for manual open events
+  useEffect(() => {
+    const handleOpenDisclaimer = () => setDisclaimerOpen(true);
+    window.addEventListener('openDisclaimer', handleOpenDisclaimer);
+    return () => window.removeEventListener('openDisclaimer', handleOpenDisclaimer);
+  }, []);
 
   const healthServices = [
     {
@@ -213,6 +222,12 @@ const Index = () => {
         onClose={() => setIsAuthModalOpen(false)}
         mode={authMode}
         onModeChange={setAuthMode}
+      />
+
+      {/* Disclaimer Modal */}
+      <DisclaimerModal 
+        forceOpen={disclaimerOpen}
+        onClose={() => setDisclaimerOpen(false)}
       />
     </div>
   );
