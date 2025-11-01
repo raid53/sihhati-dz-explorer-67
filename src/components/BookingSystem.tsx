@@ -35,9 +35,9 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ clinicId, clinicName }) =
     { id: 1, name: 'د. محمد بن عيسى', specialty: 'طب الأسنان' },
     { id: 2, name: 'د. أمينة بوزيدي', specialty: 'طب القلب' },
     { id: 3, name: 'د. عبد الرحمن مرزوقي', specialty: 'طب الأطفال' },
-    { id: 4, name: 'د. زهرة بوعلام', specialty: 'طب النساء والتوليد' },
+    { id: 4, name: 'د. فاطمة مداني', specialty: 'طب النساء والتوليد' },
     { id: 5, name: 'د. يوسف عبدلي', specialty: 'طب العيون' },
-    { id: 6, name: 'د. كاسي موسى ابراهيم', specialty: 'طب السمنة والتغذية وطب التجميل' }
+    { id: 6, name: 'د. حميد لطرش ', specialty: 'طب  التغذية وطب التجميل' }
   ];
 
   const validateForm = () => {
