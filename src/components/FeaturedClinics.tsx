@@ -160,7 +160,7 @@ const FeaturedClinics: React.FC = () => {
       },
       {
         id: 7,
-        name: 'عيادة النخيل الطبية',
+        name: 'عيادة السعادة الطبية',
         specialty: 'الطب العام والباطنية',
         rating: 4.7,
         reviews: 142,
@@ -186,7 +186,7 @@ const FeaturedClinics: React.FC = () => {
       },
       {
         id: 9,
-        name: 'مصحة النخيل ',
+        name: 'مصحة السعادة ',
         specialty: ' جراحة متخصصة',
         rating: 4.8,
         reviews: 87,
