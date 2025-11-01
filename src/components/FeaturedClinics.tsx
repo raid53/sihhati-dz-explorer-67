@@ -108,7 +108,7 @@ const FeaturedClinics: React.FC = () => {
       },
       {
         id: 3,
-        name: 'عيادة الدكتورة زهرة بوعلام',
+        name: 'عيادة الدكتورة فاطمة عياش',
         specialty: 'طب الأطفال والرضع',
         rating: 4.7,
         reviews: 156,
