@@ -173,7 +173,7 @@ const FeaturedClinics: React.FC = () => {
       },
       {
         id: 8,
-        name: 'عيادة الحكيم كاسي موسى إبراهيم',
+        name: 'عيادة الحكيم بوعلام لطرش',
         specialty: 'معالجة السمنة وسوء التغذية وطب التجميل',
         rating: 4.9,
         reviews: 95,
