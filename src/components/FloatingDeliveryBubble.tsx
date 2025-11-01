@@ -32,7 +32,7 @@ const FloatingDeliveryBubble = () => {
           isHovered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
         }`}>
           <p className="text-sm font-medium text-foreground">
-            {hasActiveOrder ? "تتبع طلبيتك" : "خدمات التوصيل والنقل للمسنين"}
+            {hasActiveOrder ? "تتبع طلبيتك" : "خدمات التوصيل والنقل "}
           </p>
           <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-border"></div>
         </div>
