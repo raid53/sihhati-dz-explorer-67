@@ -108,7 +108,7 @@ const FeaturedClinics: React.FC = () => {
       },
       {
         id: 3,
-        name: 'عيادة الدكتورة فاطمة عياش',
+        name: 'عيادة الدكتورة فاطمة مداني',
         specialty: 'طب الأطفال والرضع',
         rating: 4.7,
         reviews: 156,
