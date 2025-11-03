@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
+import { useAdmin } from '@/contexts/AdminContext';
 
 interface FilterOptions {
   specialties: string[];
@@ -51,6 +52,7 @@ interface User {
 }
 
 const AdvancedSearch = () => {
+  const { getEnabledWilayas } = useAdmin();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedWilaya, setSelectedWilaya] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -95,11 +97,9 @@ const AdvancedSearch = () => {
     'التحاليل الطبية'
   ];
 
-  const wilayas = [
-    'الجزائر', 'وهران', 'قسنطينة', 'عنابة', 'سطيف', 'باتنة', 'تلمسان', 'بجاية',
-    'بسكرة', 'ورقلة', 'البليدة', 'تيزي وزو', 'المسيلة', 'سيدي بلعباس', 'الشلف',
-    'برج بوعريريج', 'جيجل', 'مستغانم', 'بشار', 'المدية', 'تبسة', 'تيارت', 'غرداية'
-  ];
+  // الحصول على الولايات المفعلة فقط من لوحة الإدارة
+  const enabledWilayas = getEnabledWilayas();
+  const wilayas = enabledWilayas.map(w => w.nameAr);
 
   const serviceTypes = [
     { value: 'clinic', label: 'عيادة طبية' },

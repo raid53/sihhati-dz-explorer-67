@@ -4,12 +4,15 @@ import { ArrowDown, MapPin, Clock, Star, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdmin } from '@/contexts/AdminContext';
 import AuthModal from './AuthModal';
 import medicalBg1 from '@/assets/medical-bg-1.png';
 import medicalBg2 from '@/assets/medical-bg-2.png';
 import medicalBg3 from '@/assets/medical-bg-3.png';
 
 const HeroSection = () => {
+  const { getEnabledWilayas } = useAdmin();
+  const enabledWilayasCount = getEnabledWilayas().length;
   const { isAuthenticated } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
@@ -159,7 +162,7 @@ const HeroSection = () => {
               <div className="text-white/90 dark:text-slate-300 group-hover:text-white dark:group-hover:text-blue-300 transition-colors duration-500 font-medium">مريض راضٍ</div>
             </div>
             <div className="text-center group cursor-pointer bg-white/10 dark:bg-slate-800/60 rounded-3xl p-8 backdrop-blur-lg hover:bg-white/15 dark:hover:bg-slate-700/70 transition-all duration-500 border border-white/20 dark:border-slate-600/50 hover:border-white/40 dark:hover:border-emerald-400/50 shadow-lg dark:shadow-slate-900/50 hover:shadow-2xl dark:hover:shadow-emerald-400/20">
-              <div className="text-4xl font-bold text-white dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform duration-500">58</div>
+              <div className="text-4xl font-bold text-white dark:text-emerald-400 mb-3 group-hover:scale-110 transition-transform duration-500">{enabledWilayasCount}</div>
               <div className="text-white/90 dark:text-slate-300 group-hover:text-white dark:group-hover:text-emerald-300 transition-colors duration-500 font-medium">ولاية مغطاة</div>
             </div>
           </div>

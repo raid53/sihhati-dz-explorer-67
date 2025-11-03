@@ -11,6 +11,7 @@ import { toast } from '@/hooks/use-toast';
 import PaymentCardForm from './PaymentCardForm';
 import OrderProcessing from './OrderProcessing';
 import { useCart } from '@/contexts/CartContext';
+import { useAdmin } from '@/contexts/AdminContext';
 
 interface BookingFormProps {
   serviceType: 'delivery' | 'transport';
@@ -21,6 +22,7 @@ interface BookingFormProps {
 const BookingForm = ({ serviceType, serviceName, storeId }: BookingFormProps) => {
   const navigate = useNavigate();
   const { userInfo, paymentInfo, saveUserInfo, savePaymentInfo } = useCart();
+  const { getEnabledWilayas } = useAdmin();
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -49,14 +51,9 @@ const BookingForm = ({ serviceType, serviceName, storeId }: BookingFormProps) =>
     }
   }, [userInfo]);
 
-  const wilayas = [
-    'أدرار', 'الشلف', 'الأغواط', 'أم البواقي', 'باتنة', 'بجاية', 'بسكرة', 'بشار', 'البليدة', 'البويرة',
-    'تمنراست', 'تبسة', 'تلمسان', 'تيارت', 'تيزي وزو', 'الجزائر العاصمة', 'الجلفة', 'جيجل', 'سطيف', 'سعيدة',
-    'سكيكدة', 'سيدي بلعباس', 'عنابة', 'قالمة', 'قسنطينة', 'المدية', 'مستغانم', 'المسيلة', 'معسكر', 'ورقلة',
-    'وهران', 'البيض', 'إليزي', 'برج بوعريريج', 'بومرداس', 'الطارف', 'تندوف', 'تيسمسيلت', 'الوادي', 'خنشلة',
-    'سوق أهراس', 'تيبازة', 'ميلة', 'عين الدفلى', 'النعامة', 'عين تموشنت', 'غرداية', 'غليزان', 'تيميمون',
-    'برج باجي مختار', 'أولاد جلال', 'بني عباس', 'عين صالح', 'عين قزام', 'تقرت', 'جانت', 'المغير', 'المنيعة'
-  ];
+  // الحصول على الولايات المفعلة فقط من لوحة الإدارة
+  const enabledWilayas = getEnabledWilayas();
+  const wilayas = enabledWilayas.map(w => w.nameAr);
 
   const validateForm = () => {
     const errors: Record<string, string> = {};

@@ -3,20 +3,15 @@ import { Heart, MapPin, Clock, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
+import { useAdmin } from '@/contexts/AdminContext';
 
 const Footer = () => {
+  const { getEnabledWilayas } = useAdmin();
   const [showAllWilayas, setShowAllWilayas] = useState(false);
   
-  const wilayas = [
-    'أدرار', 'الشلف', 'الأغواط', 'أم البواقي', 'باتنة', 'بجاية', 'بسكرة', 'بشار',
-    'البليدة', 'البويرة', 'تمنراست', 'تبسة', 'تلمسان', 'تيارت', 'تيزي وزو', 'الجزائر العاصمة',
-    'الجلفة', 'جيجل', 'سطيف', 'سعيدة', 'سكيكدة', 'سيدي بلعباس', 'عنابة', 'قالمة',
-    'قسنطينة', 'المدية', 'مستغانم', 'المسيلة', 'معسكر', 'ورقلة', 'وهران', 'البيض',
-    'إليزي', 'برج بوعريريج', 'بومرداس', 'الطارف', 'تندوف', 'تيسمسيلت', 'الوادي', 'خنشلة',
-    'سوق أهراس', 'تيبازة', 'ميلة', 'عين الدفلى', 'النعامة', 'عين تموشنت', 'غرداية', 'غليزان',
-    'تيميمون', 'برج باجي مختار', 'أولاد جلال', 'بني عباس', 'عين صالح', 'عين قزام', 'تقرت', 'جانت',
-    'المغير', 'المنيعة'
-  ];
+  // الحصول على الولايات المفعلة فقط من لوحة الإدارة
+  const enabledWilayas = getEnabledWilayas();
+  const wilayas = enabledWilayas.map(w => w.nameAr);
 
   return (
     <footer className="bg-muted/50 text-foreground">

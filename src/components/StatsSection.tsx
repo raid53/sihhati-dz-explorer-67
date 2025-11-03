@@ -1,7 +1,10 @@
 
 import { Heart, User, MapPin, Star } from 'lucide-react';
+import { useAdmin } from '@/contexts/AdminContext';
 
 const StatsSection = () => {
+  const { getEnabledWilayas } = useAdmin();
+  const enabledWilayasCount = getEnabledWilayas().length;
   const stats = [
     {
       icon: Heart,
@@ -17,7 +20,7 @@ const StatsSection = () => {
     },
     {
       icon: MapPin,
-      number: '49',
+      number: String(enabledWilayasCount),
       label: 'ولاية مغطاة',
       color: 'text-green-500'
     },

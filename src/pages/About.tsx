@@ -18,12 +18,16 @@ import {
 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useAdmin } from '@/contexts/AdminContext';
 
 const About = () => {
+  const { getEnabledWilayas } = useAdmin();
+  const enabledWilayasCount = getEnabledWilayas().length;
+  
   const stats = [
     { icon: Users, number: '50,000+', label: 'مستخدم راضٍ' },
     { icon: Heart, number: '1,200+', label: 'مقدم خدمة' },
-    { icon: Award, number: '49', label: 'ولاية مغطاة' },
+    { icon: Award, number: String(enabledWilayasCount), label: 'ولاية مغطاة' },
     { icon: Clock, number: '24/7', label: 'خدمة متواصلة' }
   ];
 

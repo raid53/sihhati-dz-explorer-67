@@ -8,17 +8,17 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { MapPin, Search, ArrowRight, ShoppingCart, Heart, Truck, Car, Ambulance, Bus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAdmin } from '@/contexts/AdminContext';
 
 const DeliverySearch = () => {
+  const { getEnabledWilayas } = useAdmin();
   const [selectedWilaya, setSelectedWilaya] = useState('');
   const [selectedBaladiya, setSelectedBaladiya] = useState('');
   const [selectedService, setSelectedService] = useState('');
 
-  const wilayas = [
-    'الجزائر', 'وهران', 'قسنطينة', 'عنابة', 'باتنة', 'سطيف', 'سيدي بلعباس', 'بسكرة', 
-    'تلمسان', 'بجاية', 'تيزي وزو', 'الشلف', 'جيجل', 'المسيلة', 'المدية', 'معسكر',
-    'غرداية', 'ورقلة', 'تمنراست', 'أدرار', 'إليزي', 'تندوف'
-  ];
+  // الحصول على الولايات المفعلة فقط من لوحة الإدارة
+  const enabledWilayas = getEnabledWilayas();
+  const wilayas = enabledWilayas.map(w => w.nameAr);
 
   const baladiyat = {
     'الجزائر': ['الجزائر الوسط', 'باب الزوار', 'الحراش', 'بئر مراد رايس', 'الدرارية'],
