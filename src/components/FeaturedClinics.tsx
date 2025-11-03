@@ -82,7 +82,7 @@ const FeaturedClinics: React.FC = () => {
     const mockClinics = [
       {
         id: 1,
-        name: 'عيادة الدكتور محمد بن عيسى',
+        name: 'عيادة الدكتور محمد شاوي ',
         specialty: 'طب الأسنان',
         rating: 4.8,
         reviews: 124,
