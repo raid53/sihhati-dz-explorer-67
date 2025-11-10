@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { WILAYAS, Wilaya } from '@/data/wilayas';
+import { defaultDoctors, Doctor } from '@/data/doctors';
 
 interface AdminContextType {
   isAdminAuthenticated: boolean;
   isSiteActive: boolean;
   activeWilayas: Wilaya[];
+  doctors: Doctor[];
   login: (email: string, password: string) => boolean;
   logout: () => void;
   toggleSiteStatus: () => void;
   toggleWilaya: (wilayaId: number) => void;
   getEnabledWilayas: () => Wilaya[];
+  updateDoctor: (id: number, updatedData: Partial<Doctor>) => void;
+  getDoctors: () => Doctor[];
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -19,11 +23,13 @@ const ADMIN_PASSWORD = 'soadgh010203';
 const ADMIN_AUTH_KEY = 'carelink_admin_auth';
 const SITE_STATUS_KEY = 'carelink_site_status';
 const WILAYAS_STATUS_KEY = 'carelink_wilayas_status';
+const DOCTORS_KEY = 'carelink_doctors';
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [isSiteActive, setIsSiteActive] = useState(true);
   const [activeWilayas, setActiveWilayas] = useState<Wilaya[]>(WILAYAS);
+  const [doctors, setDoctors] = useState<Doctor[]>(defaultDoctors);
 
   useEffect(() => {
     // Load admin auth status
@@ -43,6 +49,20 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       } catch {
         setActiveWilayas(WILAYAS);
       }
+    }
+
+    // Load doctors
+    const doctorsData = localStorage.getItem(DOCTORS_KEY);
+    if (doctorsData) {
+      try {
+        const savedDoctors = JSON.parse(doctorsData);
+        setDoctors(savedDoctors);
+      } catch {
+        setDoctors(defaultDoctors);
+        localStorage.setItem(DOCTORS_KEY, JSON.stringify(defaultDoctors));
+      }
+    } else {
+      localStorage.setItem(DOCTORS_KEY, JSON.stringify(defaultDoctors));
     }
   }, []);
 
@@ -78,17 +98,32 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return activeWilayas.filter(w => w.enabled);
   };
 
+  const updateDoctor = (id: number, updatedData: Partial<Doctor>) => {
+    const updatedDoctors = doctors.map(doctor =>
+      doctor.id === id ? { ...doctor, ...updatedData } : doctor
+    );
+    setDoctors(updatedDoctors);
+    localStorage.setItem(DOCTORS_KEY, JSON.stringify(updatedDoctors));
+  };
+
+  const getDoctors = (): Doctor[] => {
+    return doctors;
+  };
+
   return (
     <AdminContext.Provider
       value={{
         isAdminAuthenticated,
         isSiteActive,
         activeWilayas,
+        doctors,
         login,
         logout,
         toggleSiteStatus,
         toggleWilaya,
         getEnabledWilayas,
+        updateDoctor,
+        getDoctors,
       }}
     >
       {children}

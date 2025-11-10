@@ -5,8 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Shield, LogOut, Globe, MapPin, CheckCircle2, XCircle } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Shield, LogOut, Globe, MapPin, CheckCircle2, XCircle, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import DoctorManagement from '@/components/DoctorManagement';
 
 const AdminDashboard = () => {
   const { isAdminAuthenticated, isSiteActive, activeWilayas, logout, toggleSiteStatus, toggleWilaya } = useAdmin();
@@ -70,86 +72,113 @@ const AdminDashboard = () => {
           </Button>
         </div>
 
-        {/* Site Status Card */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <Globe className="w-5 h-5 text-primary" />
-              <CardTitle>حالة الموقع / Site Status</CardTitle>
-            </div>
-            <CardDescription>التحكم في تفعيل وإغلاق الموقع</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-              <div className="space-y-1">
-                <Label htmlFor="site-status" className="text-base font-medium">
-                  {isSiteActive ? "الموقع نشط" : "الموقع مغلق"}
-                </Label>
-                <p className="text-sm text-muted-foreground">
-                  {isSiteActive ? "الموقع متاح للزوار حاليًا" : "يتم عرض صفحة الصيانة للزوار"}
-                </p>
-              </div>
-              <Switch
-                id="site-status"
-                checked={isSiteActive}
-                onCheckedChange={handleToggleSite}
-              />
-            </div>
-            
-            <div className={`flex items-center gap-2 p-3 rounded-lg ${isSiteActive ? 'bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-destructive/10 text-destructive'}`}>
-              {isSiteActive ? (
-                <>
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm font-medium">الموقع يعمل بشكل طبيعي</span>
-                </>
-              ) : (
-                <>
-                  <XCircle className="w-5 h-5" />
-                  <span className="text-sm font-medium">الموقع في وضع الصيانة</span>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Tabs for different sections */}
+        <Tabs defaultValue="site" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="site">
+              <Globe className="w-4 h-4 ml-2" />
+              حالة الموقع
+            </TabsTrigger>
+            <TabsTrigger value="wilayas">
+              <MapPin className="w-4 h-4 ml-2" />
+              الولايات
+            </TabsTrigger>
+            <TabsTrigger value="doctors">
+              <Users className="w-4 h-4 ml-2" />
+              الأطباء
+            </TabsTrigger>
+          </TabsList>
 
-        {/* Wilayas Management Card */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-primary" />
-              <CardTitle>إدارة الولايات / Wilayas Management</CardTitle>
-            </div>
-            <CardDescription>
-              التحكم في الولايات المدعومة ({enabledCount} من 58 مفعلة)
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto p-1">
-              {activeWilayas.map((wilaya) => (
-                <div
-                  key={wilaya.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
-                    wilaya.enabled
-                      ? 'bg-card border-border hover:bg-accent/50'
-                      : 'bg-muted/50 border-muted opacity-60'
-                  }`}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-sm truncate">{wilaya.nameAr}</p>
-                    <p className="text-xs text-muted-foreground truncate" dir="ltr">
-                      {wilaya.nameEn}
+          {/* Site Status Tab */}
+          <TabsContent value="site">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-primary" />
+                  <CardTitle>حالة الموقع / Site Status</CardTitle>
+                </div>
+                <CardDescription>التحكم في تفعيل وإغلاق الموقع</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                  <div className="space-y-1">
+                    <Label htmlFor="site-status" className="text-base font-medium">
+                      {isSiteActive ? "الموقع نشط" : "الموقع مغلق"}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      {isSiteActive ? "الموقع متاح للزوار حاليًا" : "يتم عرض صفحة الصيانة للزوار"}
                     </p>
                   </div>
                   <Switch
-                    checked={wilaya.enabled}
-                    onCheckedChange={() => handleToggleWilaya(wilaya.id, wilaya.nameAr, wilaya.enabled)}
-                    className="ml-3"
+                    id="site-status"
+                    checked={isSiteActive}
+                    onCheckedChange={handleToggleSite}
                   />
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+                
+                <div className={`flex items-center gap-2 p-3 rounded-lg ${isSiteActive ? 'bg-green-500/10 text-green-700 dark:text-green-400' : 'bg-destructive/10 text-destructive'}`}>
+                  {isSiteActive ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="text-sm font-medium">الموقع يعمل بشكل طبيعي</span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="w-5 h-5" />
+                      <span className="text-sm font-medium">الموقع في وضع الصيانة</span>
+                    </>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Wilayas Tab */}
+          <TabsContent value="wilayas">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  <CardTitle>إدارة الولايات / Wilayas Management</CardTitle>
+                </div>
+                <CardDescription>
+                  التحكم في الولايات المدعومة ({enabledCount} من 58 مفعلة)
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[600px] overflow-y-auto p-1">
+                  {activeWilayas.map((wilaya) => (
+                    <div
+                      key={wilaya.id}
+                      className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${
+                        wilaya.enabled
+                          ? 'bg-card border-border hover:bg-accent/50'
+                          : 'bg-muted/50 border-muted opacity-60'
+                      }`}
+                    >
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{wilaya.nameAr}</p>
+                        <p className="text-xs text-muted-foreground truncate" dir="ltr">
+                          {wilaya.nameEn}
+                        </p>
+                      </div>
+                      <Switch
+                        checked={wilaya.enabled}
+                        onCheckedChange={() => handleToggleWilaya(wilaya.id, wilaya.nameAr, wilaya.enabled)}
+                        className="ml-3"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Doctors Tab */}
+          <TabsContent value="doctors">
+            <DoctorManagement />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );

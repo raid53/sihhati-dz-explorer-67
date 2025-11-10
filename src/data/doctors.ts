@@ -1,0 +1,89 @@
+export interface Doctor {
+  id: number;
+  name: string;
+  specialty: string;
+  experience: string;
+  location: string;
+  rating: number;
+  reviews: number;
+  price: string;
+  nextAvailable: string;
+  image: string;
+  specialties?: string[];
+}
+
+export const defaultDoctors: Doctor[] = [
+  {
+    id: 1,
+    name: 'د. كريم الزهراني',
+    specialty: 'طبيب قلب',
+    experience: '15 سنة خبرة',
+    location: 'الجزائر العاصمة',
+    rating: 4.9,
+    reviews: 234,
+    price: '3000 دج',
+    nextAvailable: 'غداً 10:00 ص',
+    image: '/src/assets/doctor-male-1.jpg'
+  },
+  {
+    id: 2,
+    name: 'د. نادية السعدي',
+    specialty: 'طبيبة أطفال',
+    experience: '12 سنة خبرة',
+    location: 'وهران',
+    rating: 4.8,
+    reviews: 189,
+    price: '2500 دج',
+    nextAvailable: 'اليوم 14:30',
+    image: '/src/assets/doctor-female-2.jpg'
+  },
+  {
+    id: 3,
+    name: 'د. ياسين المنصوري',
+    specialty: 'طبيب عظام',
+    experience: '20 سنة خبرة',
+    location: 'قسنطينة',
+    rating: 4.7,
+    reviews: 156,
+    price: '3500 دج',
+    nextAvailable: 'بعد غد 09:00 ص',
+    image: '/src/assets/doctor-male-2.jpg'
+  },
+  {
+    id: 4,
+    name: 'د. ليلى الوردي',
+    specialty: 'طبيبة جلدية',
+    experience: '8 سنوات خبرة',
+    location: 'عنابة',
+    rating: 4.6,
+    reviews: 98,
+    price: '2800 دج',
+    nextAvailable: 'الأسبوع المقبل',
+    image: '/src/assets/doctor-female-1.jpg'
+  },
+  {
+    id: 5,
+    name: 'د. رشيد القاسمي',
+    specialty: 'أخصائي قلب وأوعية دموية',
+    experience: '15 سنة خبرة',
+    location: 'غرداية',
+    rating: 4.8,
+    reviews: 156,
+    price: '3200 دج',
+    nextAvailable: 'بعد غد 9:00 ص',
+    image: '/src/assets/doctor-male-1.jpg'
+  },
+  {
+    id: 6,
+    name: 'د. عماد الفاسي',
+    specialty: 'طب التغذية وطب التجميل',
+    experience: '18 سنة خبرة - دراسة في فرنسا',
+    location: 'غرداية',
+    rating: 4.9,
+    reviews: 167,
+    price: '4000 دج',
+    nextAvailable: 'اليوم 15:00',
+    image: '/src/assets/doctor-male-2.jpg',
+    specialties: ['معالجة السمنة وسوء التغذية', 'طب التجميل', 'العلاج بالليزر', 'الأمراض العامة']
+  }
+];

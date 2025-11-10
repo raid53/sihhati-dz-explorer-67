@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAdmin } from '@/contexts/AdminContext';
 import doctorFemale1 from '@/assets/doctor-female-1.jpg';
 import doctorMale1 from '@/assets/doctor-male-1.jpg';
 import doctorMale2 from '@/assets/doctor-male-2.jpg';
@@ -16,82 +17,17 @@ import doctorFemale2 from '@/assets/doctor-female-2.jpg';
 const Doctors = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const { getDoctors } = useAdmin();
+  
+  const doctors = getDoctors();
 
-  const doctors = [
-    {
-      id: 1,
-      name: 'د. أحمد بن علي',
-      specialty: 'طبيب قلب',
-      experience: '15 سنة خبرة',
-      location: 'الجزائر العاصمة',
-      rating: 4.9,
-      reviews: 234,
-      price: '3000 دج',
-      nextAvailable: 'غداً 10:00 ص',
-      image: doctorMale1
-    },
-    {
-      id: 2,
-      name: 'د. فاطمة محمدي',
-      specialty: 'طبيبة أطفال',
-      experience: '12 سنة خبرة',
-      location: 'وهران',
-      rating: 4.8,
-      reviews: 189,
-      price: '2500 دج',
-      nextAvailable: 'اليوم 14:30',
-      image: doctorFemale2
-    },
-    {
-      id: 3,
-      name: 'د. محمد العربي',
-      specialty: 'طبيب عظام',
-      experience: '20 سنة خبرة',
-      location: 'قسنطينة',
-      rating: 4.7,
-      reviews: 156,
-      price: '3500 دج',
-      nextAvailable: 'بعد غد 09:00 ص',
-      image: doctorMale2
-    },
-    {
-      id: 4,
-      name: 'د. سارة بوعلام',
-      specialty: 'طبيبة جلدية',
-      experience: '8 سنوات خبرة',
-      location: 'عنابة',
-      rating: 4.6,
-      reviews: 98,
-      price: '2800 دج',
-      nextAvailable: 'الأسبوع المقبل',
-      image: doctorFemale1
-    },
-    {
-      id: 5,
-      name: 'د. محمد الصحراوي',
-      specialty: 'أخصائي قلب وأوعية دموية',
-      experience: '15 سنة خبرة',
-      location: 'غرداية',
-      rating: 4.8,
-      reviews: 156,
-      price: '3200 دج',
-      nextAvailable: 'بعد غد 9:00 ص',
-      image: doctorMale1
-    },
-    {
-      id: 6,
-      name: 'د. فريد  لطرش',
-      specialty: 'طب التغذية وطب التجميل',
-      experience: '18 سنة خبرة - دراسة في فرنسا', 
-      location: 'غرداية',
-      rating: 4.9,
-      reviews: 167,
-      price: '4000 دج',
-      nextAvailable: 'اليوم 15:00',
-      image: doctorMale2,
-      specialties: ['معالجة السمنة وسوء التغذية', 'طب التجميل', 'العلاج بالليزر', 'الأمراض العامة']
-    }
-  ];
+  // Map image paths to imported images
+  const imageMap: Record<string, string> = {
+    '/src/assets/doctor-male-1.jpg': doctorMale1,
+    '/src/assets/doctor-male-2.jpg': doctorMale2,
+    '/src/assets/doctor-female-1.jpg': doctorFemale1,
+    '/src/assets/doctor-female-2.jpg': doctorFemale2,
+  };
 
   const filteredDoctors = doctors.filter(doctor =>
     doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -132,7 +68,7 @@ const Doctors = () => {
                 <Card key={doctor.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="text-center">
                     <Avatar className="w-24 h-24 mx-auto mb-4">
-                      <AvatarImage src={doctor.image} alt={doctor.name} />
+                      <AvatarImage src={imageMap[doctor.image] || doctor.image} alt={doctor.name} />
                       <AvatarFallback>{doctor.name.split(' ')[1]?.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <CardTitle className="text-lg">{doctor.name}</CardTitle>
