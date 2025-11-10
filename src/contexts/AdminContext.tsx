@@ -1,12 +1,18 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { WILAYAS, Wilaya } from '@/data/wilayas';
 import { defaultDoctors, Doctor } from '@/data/doctors';
+import carelinkLogo from '@/assets/carelink-logo.png';
+
+export interface SplashScreenSettings {
+  logoUrl: string;
+}
 
 interface AdminContextType {
   isAdminAuthenticated: boolean;
   isSiteActive: boolean;
   activeWilayas: Wilaya[];
   doctors: Doctor[];
+  splashScreenSettings: SplashScreenSettings;
   login: (email: string, password: string) => boolean;
   logout: () => void;
   toggleSiteStatus: () => void;
@@ -14,6 +20,8 @@ interface AdminContextType {
   getEnabledWilayas: () => Wilaya[];
   updateDoctor: (id: number, updatedData: Partial<Doctor>) => void;
   getDoctors: () => Doctor[];
+  updateSplashScreenSettings: (settings: Partial<SplashScreenSettings>) => void;
+  resetSplashScreenSettings: () => void;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -24,12 +32,18 @@ const ADMIN_AUTH_KEY = 'carelink_admin_auth';
 const SITE_STATUS_KEY = 'carelink_site_status';
 const WILAYAS_STATUS_KEY = 'carelink_wilayas_status';
 const DOCTORS_KEY = 'carelink_doctors';
+const SPLASH_SCREEN_KEY = 'carelink_splash_screen';
+
+const DEFAULT_SPLASH_SETTINGS: SplashScreenSettings = {
+  logoUrl: carelinkLogo,
+};
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
   const [isSiteActive, setIsSiteActive] = useState(true);
   const [activeWilayas, setActiveWilayas] = useState<Wilaya[]>(WILAYAS);
   const [doctors, setDoctors] = useState<Doctor[]>(defaultDoctors);
+  const [splashScreenSettings, setSplashScreenSettings] = useState<SplashScreenSettings>(DEFAULT_SPLASH_SETTINGS);
 
   useEffect(() => {
     // Load admin auth status
@@ -63,6 +77,17 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
     } else {
       localStorage.setItem(DOCTORS_KEY, JSON.stringify(defaultDoctors));
+    }
+
+    // Load splash screen settings
+    const splashData = localStorage.getItem(SPLASH_SCREEN_KEY);
+    if (splashData) {
+      try {
+        const savedSettings = JSON.parse(splashData);
+        setSplashScreenSettings(savedSettings);
+      } catch {
+        setSplashScreenSettings(DEFAULT_SPLASH_SETTINGS);
+      }
     }
   }, []);
 
@@ -110,6 +135,17 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return doctors;
   };
 
+  const updateSplashScreenSettings = (settings: Partial<SplashScreenSettings>) => {
+    const updatedSettings = { ...splashScreenSettings, ...settings };
+    setSplashScreenSettings(updatedSettings);
+    localStorage.setItem(SPLASH_SCREEN_KEY, JSON.stringify(updatedSettings));
+  };
+
+  const resetSplashScreenSettings = () => {
+    setSplashScreenSettings(DEFAULT_SPLASH_SETTINGS);
+    localStorage.setItem(SPLASH_SCREEN_KEY, JSON.stringify(DEFAULT_SPLASH_SETTINGS));
+  };
+
   return (
     <AdminContext.Provider
       value={{
@@ -117,6 +153,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         isSiteActive,
         activeWilayas,
         doctors,
+        splashScreenSettings,
         login,
         logout,
         toggleSiteStatus,
@@ -124,6 +161,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         getEnabledWilayas,
         updateDoctor,
         getDoctors,
+        updateSplashScreenSettings,
+        resetSplashScreenSettings,
       }}
     >
       {children}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useAdmin } from '@/contexts/AdminContext';
 import carelinkLogo from '@/assets/carelink-logo.png';
 
 interface SplashScreenProps {
@@ -6,8 +7,12 @@ interface SplashScreenProps {
 }
 
 const SplashScreen = ({ onComplete }: SplashScreenProps) => {
+  const { splashScreenSettings } = useAdmin();
   const [isVisible, setIsVisible] = useState(true);
   const [animationPhase, setAnimationPhase] = useState(0);
+  
+  // Use custom logo if set, otherwise use default
+  const logoToUse = splashScreenSettings.logoUrl || carelinkLogo;
 
   useEffect(() => {
     const timer1 = setTimeout(() => setAnimationPhase(1), 500);
@@ -35,9 +40,13 @@ const SplashScreen = ({ onComplete }: SplashScreenProps) => {
         {/* Logo Image - Large and Centered */}
         <div className={`transform transition-all duration-1000 ease-out ${animationPhase >= 1 ? 'scale-100 opacity-100' : 'scale-90 opacity-0'}`}>
           <img 
-            src={carelinkLogo} 
+            src={logoToUse} 
             alt="CareLink - رابط الرعاية" 
             className="max-w-lg w-full h-auto drop-shadow-2xl rounded-3xl"
+            onError={(e) => {
+              // Fallback to default logo if custom logo fails to load
+              e.currentTarget.src = carelinkLogo;
+            }}
           />
         </div>
 
