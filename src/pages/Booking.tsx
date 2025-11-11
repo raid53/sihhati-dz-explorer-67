@@ -9,10 +9,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { useAdmin } from '@/contexts/AdminContext';
 
 const Booking = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
+  const { getDoctors } = useAdmin();
+  const doctors = getDoctors();
   
   // Extract booking parameters from URL
   const bookingData = {
@@ -30,13 +33,6 @@ const Booking = () => {
   const [selectedDoctor, setSelectedDoctor] = useState(bookingData.doctorId || '');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
-
-  const doctors = [
-    { id: 1, name: 'د. أحمد بن علي', specialty: 'طبيب قلب', price: '3000 دج' },
-    { id: 2, name: 'د. فاطمة محمدي', specialty: 'طبيبة أطفال', price: '2500 دج' },
-    { id: 3, name: 'د. محمد العربي', specialty: 'طبيب عظام', price: '3500 دج' },
-    { id: 4, name: 'د. سارة بوعلام', specialty: 'طبيبة جلدية', price: '2800 دج' }
-  ];
 
   const availableTimes = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',

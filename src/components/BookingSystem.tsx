@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, Clock, User, Phone, MessageSquare, CreditCard, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAdmin } from '@/contexts/AdminContext';
 
 interface BookingSystemProps {
   clinicId: number;
@@ -17,6 +17,8 @@ interface BookingSystemProps {
 const BookingSystem: React.FC<BookingSystemProps> = ({ clinicId, clinicName }) => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { getDoctors } = useAdmin();
+  const doctors = getDoctors();
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState('');
@@ -29,15 +31,6 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ clinicId, clinicName }) =
   const availableTimes = [
     '09:00', '09:30', '10:00', '10:30', '11:00', '11:30',
     '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
-  ];
-
-  const doctors = [
-    { id: 1, name: 'د. محمد بن عيسى', specialty: 'طب الأسنان' },
-    { id: 2, name: 'د. أمينة بوزيدي', specialty: 'طب القلب' },
-    { id: 3, name: 'د. عبد الرحمن مرزوقي', specialty: 'طب الأطفال' },
-    { id: 4, name: 'د. فاطمة مداني', specialty: 'طب النساء والتوليد' },
-    { id: 5, name: 'د. يوسف عبدلي', specialty: 'طب العيون' },
-    { id: 6, name: 'د. حميد لطرش ', specialty: 'طب  التغذية وطب التجميل' }
   ];
 
   const validateForm = () => {
@@ -228,7 +221,7 @@ const BookingSystem: React.FC<BookingSystemProps> = ({ clinicId, clinicName }) =
               {doctors.map((doctor) => (
                 <SelectItem key={doctor.id} value={doctor.name}>
                   <div>
-                    <p className="font-medium">{doctor.name}</p>
+                    <p className="font-medium">د. {doctor.name}</p>
                     <p className="text-sm text-gray-500">{doctor.specialty}</p>
                   </div>
                 </SelectItem>
