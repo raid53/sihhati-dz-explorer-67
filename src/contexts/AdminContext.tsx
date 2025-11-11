@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { WILAYAS, Wilaya } from '@/data/wilayas';
 import { defaultDoctors, Doctor } from '@/data/doctors';
+import { defaultClinics, Clinic } from '@/data/clinics';
 import carelinkLogo from '@/assets/carelink-logo.png';
 
 export interface SplashScreenSettings {
@@ -12,6 +13,7 @@ interface AdminContextType {
   isSiteActive: boolean;
   activeWilayas: Wilaya[];
   doctors: Doctor[];
+  clinics: Clinic[];
   splashScreenSettings: SplashScreenSettings;
   login: (email: string, password: string) => boolean;
   logout: () => void;
@@ -20,6 +22,8 @@ interface AdminContextType {
   getEnabledWilayas: () => Wilaya[];
   updateDoctor: (id: number, updatedData: Partial<Doctor>) => void;
   getDoctors: () => Doctor[];
+  updateClinic: (id: number, updatedData: Partial<Clinic>) => void;
+  getClinics: () => Clinic[];
   updateSplashScreenSettings: (settings: Partial<SplashScreenSettings>) => void;
   resetSplashScreenSettings: () => void;
 }
@@ -32,6 +36,7 @@ const ADMIN_AUTH_KEY = 'carelink_admin_auth';
 const SITE_STATUS_KEY = 'carelink_site_status';
 const WILAYAS_STATUS_KEY = 'carelink_wilayas_status';
 const DOCTORS_KEY = 'carelink_doctors';
+const CLINICS_KEY = 'carelink_clinics';
 const SPLASH_SCREEN_KEY = 'carelink_splash_screen';
 
 const DEFAULT_SPLASH_SETTINGS: SplashScreenSettings = {
@@ -43,6 +48,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [isSiteActive, setIsSiteActive] = useState(true);
   const [activeWilayas, setActiveWilayas] = useState<Wilaya[]>(WILAYAS);
   const [doctors, setDoctors] = useState<Doctor[]>(defaultDoctors);
+  const [clinics, setClinics] = useState<Clinic[]>(defaultClinics);
   const [splashScreenSettings, setSplashScreenSettings] = useState<SplashScreenSettings>(DEFAULT_SPLASH_SETTINGS);
 
   useEffect(() => {
@@ -77,6 +83,20 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
     } else {
       localStorage.setItem(DOCTORS_KEY, JSON.stringify(defaultDoctors));
+    }
+
+    // Load clinics
+    const clinicsData = localStorage.getItem(CLINICS_KEY);
+    if (clinicsData) {
+      try {
+        const savedClinics = JSON.parse(clinicsData);
+        setClinics(savedClinics);
+      } catch {
+        setClinics(defaultClinics);
+        localStorage.setItem(CLINICS_KEY, JSON.stringify(defaultClinics));
+      }
+    } else {
+      localStorage.setItem(CLINICS_KEY, JSON.stringify(defaultClinics));
     }
 
     // Load splash screen settings
@@ -135,6 +155,18 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return doctors;
   };
 
+  const updateClinic = (id: number, updatedData: Partial<Clinic>) => {
+    const updatedClinics = clinics.map(clinic =>
+      clinic.id === id ? { ...clinic, ...updatedData } : clinic
+    );
+    setClinics(updatedClinics);
+    localStorage.setItem(CLINICS_KEY, JSON.stringify(updatedClinics));
+  };
+
+  const getClinics = (): Clinic[] => {
+    return clinics;
+  };
+
   const updateSplashScreenSettings = (settings: Partial<SplashScreenSettings>) => {
     const updatedSettings = { ...splashScreenSettings, ...settings };
     setSplashScreenSettings(updatedSettings);
@@ -153,6 +185,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         isSiteActive,
         activeWilayas,
         doctors,
+        clinics,
         splashScreenSettings,
         login,
         logout,
@@ -161,6 +194,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         getEnabledWilayas,
         updateDoctor,
         getDoctors,
+        updateClinic,
+        getClinics,
         updateSplashScreenSettings,
         resetSplashScreenSettings,
       }}

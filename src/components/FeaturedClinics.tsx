@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Star, MapPin, Clock, Phone, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useAdmin } from '@/contexts/AdminContext';
 import clinic1 from '@/assets/clinic-1.jpg';
 import clinic2 from '@/assets/clinic-2.jpg';
 import hospital1 from '@/assets/hospital-1.jpg';
@@ -47,6 +48,15 @@ const FeaturedClinics: React.FC = () => {
   const [providers, setProviders] = useState<Provider[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [showAll, setShowAll] = useState(false);
+  const { getClinics } = useAdmin();
+  
+  // Map image paths to imported images
+  const imageMap: Record<string, string> = {
+    '/src/assets/clinic-1.jpg': clinic1,
+    '/src/assets/clinic-2.jpg': clinic2,
+    '/src/assets/hospital-1.jpg': hospital1,
+    '/src/assets/hospital-2.jpg': hospital2,
+  };
 
   useEffect(() => {
     const allServices = JSON.parse(localStorage.getItem('services') || '[]');
@@ -77,127 +87,9 @@ const FeaturedClinics: React.FC = () => {
     return labels[serviceType as keyof typeof labels] || serviceType;
   };
 
-  // إذا لم توجد خدمات، عرض البيانات الوهمية القديمة
+  // إذا لم توجد خدمات، عرض العيادات من AdminContext
   if (services.length === 0) {
-    const mockClinics = [
-      {
-        id: 1,
-        name: 'عيادة الدكتور محمد شاوي ',
-        specialty: 'طب الأسنان',
-        rating: 4.8,
-        reviews: 124,
-        location: 'حي بومعراف، الجزائر العاصمة',
-        image: clinic1,
-        distance: '2.5 كم',
-        nextAvailable: 'اليوم 3:30 م',
-        price: 'من 3000 دج',
-        verified: true
-      },
-      {
-        id: 2,
-        name: 'مستشفى الشهيد خليل عمران',
-        specialty: 'طب القلب والأوعية الدموية',
-        rating: 4.9,
-        reviews: 89,
-        location: 'وسط المدينة، وهران',
-        image: hospital1,
-        distance: '1.2 كم',
-        nextAvailable: 'غداً 10:00 ص',
-        price: 'من 4500 دج',
-        verified: true
-      },
-      {
-        id: 3,
-        name: 'عيادة الدكتورة فاطمة مداني',
-        specialty: 'طب الأطفال والرضع',
-        rating: 4.7,
-        reviews: 156,
-        location: 'حي الجامعة، قسنطينة',
-        image: clinic2,
-        distance: '3.8 كم',
-        nextAvailable: 'اليوم 5:00 م',
-        price: 'من 2500 دج',
-        verified: true
-      },
-      {
-        id: 4,
-        name: 'مركز الشفاء للعلاج الطبيعي',
-        specialty: 'العلاج الطبيعي وإعادة التأهيل',
-        rating: 4.6,
-        reviews: 123,
-        location: 'حي النصر، سطيف',
-        image: hospital2,
-        distance: '4.2 كم',
-        nextAvailable: 'غداً 2:00 م',
-        price: 'من 2000 دج',
-        verified: false
-      },
-      {
-        id: 5,
-        name: 'عيادة الدكتور عبد الرحمن زروقي',
-        specialty: 'طب العيون',
-        rating: 4.8,
-        reviews: 198,
-        location: 'شارع الاستقلال، عنابة',
-        image: clinic1,
-        distance: '3.1 كم',
-        nextAvailable: 'اليوم 4:30 م',
-        price: 'من 3500 دج',
-        verified: true
-      },
-      {
-        id: 6,
-        name: 'مركز الأمل للصحة النفسية',
-        specialty: 'الطب النفسي والعلاج النفسي',
-        rating: 4.5,
-        reviews: 87,
-        location: 'حي البدر، تلمسان',
-        image: hospital1,
-        distance: '5.7 كم',
-        nextAvailable: 'غداً 11:00 ص',
-        price: 'من 4000 دج',
-        verified: true
-      },
-      {
-        id: 7,
-        name: 'عيادة السعادة الطبية',
-        specialty: 'الطب العام والباطنية',
-        rating: 4.7,
-        reviews: 142,
-        location: 'وسط المدينة، غرداية',
-        image: clinic2,
-        distance: '2.8 كم',
-        nextAvailable: 'اليوم 2:00 م',
-        price: 'من 2500 دج',
-        verified: true
-      },
-      {
-        id: 8,
-        name: 'عيادة الحكيم بوعلام لطرش',
-        specialty: 'معالجة السمنة وسوء التغذية وطب التجميل',
-        rating: 4.9,
-        reviews: 95,
-        location: 'وسط المدينة، غرداية',
-        image: clinic1,
-        distance: '1.5 كم',
-        nextAvailable: 'اليوم 4:00 م',
-        price: 'من 4000 دج',
-        verified: true
-      },
-      {
-        id: 9,
-        name: 'مصحة السعادة ',
-        specialty: ' جراحة متخصصة',
-        rating: 4.8,
-        reviews: 87,
-        location: ' قرب المطار، غرداية',
-        image: hospital2,
-        distance: '8.2 كم',
-        nextAvailable: 'غداً 9:00 ص',
-        price: 'من 5000 دج',
-        verified: true
-      }
-    ];
+    const allClinics = getClinics();
 
     return (
       <section className="py-16 px-4 bg-white/80 backdrop-blur-sm relative overflow-hidden">
@@ -213,12 +105,12 @@ const FeaturedClinics: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockClinics.slice(0, showAll ? mockClinics.length : 6).map((clinic) => (
+            {allClinics.slice(0, showAll ? allClinics.length : 6).map((clinic) => (
               <Link key={clinic.id} to={`/clinic/${clinic.id}`}>
                 <Card className="group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer bg-white border-0 shadow-lg overflow-hidden">
                   <div className="relative">
                     <img 
-                      src={clinic.image} 
+                      src={imageMap[clinic.image] || clinic.image} 
                       alt={clinic.name}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
@@ -289,7 +181,7 @@ const FeaturedClinics: React.FC = () => {
                 className="hover:bg-green-50"
                 onClick={() => setShowAll(true)}
               >
-                عرض المزيد من العيادات ({mockClinics.length - 6} أخرى)
+                عرض المزيد من العيادات ({allClinics.length - 6} أخرى)
               </Button>
             ) : (
               <Button 

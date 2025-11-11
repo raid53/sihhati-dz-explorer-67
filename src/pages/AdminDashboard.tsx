@@ -6,9 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Shield, LogOut, Globe, MapPin, CheckCircle2, XCircle, Users, Image } from 'lucide-react';
+import { Shield, LogOut, Globe, MapPin, CheckCircle2, XCircle, Users, Image, Building2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import DoctorManagement from '@/components/DoctorManagement';
+import ClinicsManagement from '@/components/ClinicsManagement';
 import SplashScreenManagement from '@/components/SplashScreenManagement';
 
 const AdminDashboard = () => {
@@ -75,7 +76,7 @@ const AdminDashboard = () => {
 
         {/* Tabs for different sections */}
         <Tabs defaultValue="site" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="site">
               <Globe className="w-4 h-4 ml-2" />
               حالة الموقع
@@ -87,6 +88,10 @@ const AdminDashboard = () => {
             <TabsTrigger value="doctors">
               <Users className="w-4 h-4 ml-2" />
               الأطباء
+            </TabsTrigger>
+            <TabsTrigger value="clinics">
+              <Building2 className="w-4 h-4 ml-2" />
+              العيادات
             </TabsTrigger>
             <TabsTrigger value="splash">
               <Image className="w-4 h-4 ml-2" />
@@ -182,6 +187,11 @@ const AdminDashboard = () => {
           {/* Doctors Tab */}
           <TabsContent value="doctors">
             <DoctorManagement />
+          </TabsContent>
+
+          {/* Clinics Tab */}
+          <TabsContent value="clinics">
+            <ClinicsManagement />
           </TabsContent>
 
           {/* Splash Screen Tab */}
