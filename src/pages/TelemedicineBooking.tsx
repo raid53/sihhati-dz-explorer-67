@@ -28,6 +28,11 @@ import {
   MapPin
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAdmin } from '@/contexts/AdminContext';
+import doctorMale1 from '@/assets/doctor-male-1.jpg';
+import doctorMale2 from '@/assets/doctor-male-2.jpg';
+import doctorFemale1 from '@/assets/doctor-female-1.jpg';
+import doctorFemale2 from '@/assets/doctor-female-2.jpg';
 
 interface Doctor {
   id: string;
@@ -45,6 +50,15 @@ interface Doctor {
 const TelemedicineBooking: React.FC = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { getDoctors } = useAdmin();
+  
+  // Map image paths to imported images
+  const imageMap: Record<string, string> = {
+    '/src/assets/doctor-male-1.jpg': doctorMale1,
+    '/src/assets/doctor-male-2.jpg': doctorMale2,
+    '/src/assets/doctor-female-1.jpg': doctorFemale1,
+    '/src/assets/doctor-female-2.jpg': doctorFemale2,
+  };
   
   // حالات النموذج
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -64,57 +78,24 @@ const TelemedicineBooking: React.FC = () => {
   const [deviceCheck, setDeviceCheck] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // قائمة الأطباء
-  const doctors: Doctor[] = [
-    {
-      id: '1',
-      name: 'د. محمد بن عبد الله بومدين',
-      specialty: 'طب الباطنة العام',
-      experience: '15 سنة خبرة',
-      rating: 4.9,
-      languages: ['العربية', 'الإنجليزية', 'الفرنسية'],
-      price: 3000,
-      image: '/api/placeholder/150/150',
+  // جلب الأطباء من AdminContext
+  const allDoctors = getDoctors();
+  
+  // تصفية وتحويل الأطباء الذين يقدمون خدمة الطب عن بعد
+  const doctors: Doctor[] = allDoctors
+    .filter(doc => doc.specialties?.includes('طب عن بعد'))
+    .map(doc => ({
+      id: String(doc.id),
+      name: doc.name,
+      specialty: doc.specialty,
+      experience: doc.experience,
+      rating: doc.rating,
+      languages: ['العربية', 'الفرنسية'],
+      price: parseInt(doc.price.replace(/[^\d]/g, '')) || 0,
+      image: imageMap[doc.image] || doc.image,
       availability: ['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'],
-      qualifications: ['دكتوراه في الطب - جامعة الجزائر', 'زمالة الباطنة - مستشفى مصطفى باشا', 'عضو الجمعية الطبية الجزائرية']
-    },
-    {
-      id: '2',
-      name: 'د. عائشة بن زيان',
-      specialty: 'طب النساء والتوليد',
-      experience: '12 سنة خبرة',
-      rating: 4.8,
-      languages: ['العربية', 'الفرنسية'],
-      price: 3500,
-      image: '/api/placeholder/150/150',
-      availability: ['08:00', '09:00', '10:00', '13:00', '14:00', '15:00'],
-      qualifications: ['دكتوراه في طب النساء - جامعة وهران', 'زمالة الولادة - CHU بني مسوس', 'خبيرة في الطب التناسلي']
-    },
-    {
-      id: '3',
-      name: 'د. عبد الرزاق بلعيد',
-      specialty: 'طب الأطفال',
-      experience: '10 سنوات خبرة',
-      rating: 4.7,
-      languages: ['العربية', 'الفرنسية'],
-      price: 2800,
-      image: '/api/placeholder/150/150',
-      availability: ['09:00', '10:00', '11:00', '16:00', '17:00', '18:00'],
-      qualifications: ['دكتوراه في طب الأطفال - جامعة قسنطينة', 'زمالة طب الأطفال - مستشفى بارني', 'متخصص في التغذية العلاجية']
-    },
-    {
-      id: '4',
-      name: 'د. خديجة مصطفاي',
-      specialty: 'الطب النفسي',
-      experience: '8 سنوات خبرة',
-      rating: 4.9,
-      languages: ['العربية', 'الإنجليزية', 'الفرنسية'],
-      price: 4000,
-      image: '/api/placeholder/150/150',
-      availability: ['10:00', '11:00', '14:00', '15:00', '16:00', '17:00'],
-      qualifications: ['دكتوراه في الطب النفسي - جامعة الجزائر', 'زمالة العلاج النفسي - مستشفى دريد حسين', 'خبيرة في العلاج المعرفي السلوكي']
-    }
-  ];
+      qualifications: doc.specialties || []
+    }));
 
   // أنواع الاستشارة
   const consultationTypes = [

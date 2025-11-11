@@ -7,48 +7,41 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import telemedicineImg from '@/assets/telemedicine.jpg';
+import { useAdmin } from '@/contexts/AdminContext';
+import doctorMale1 from '@/assets/doctor-male-1.jpg';
+import doctorMale2 from '@/assets/doctor-male-2.jpg';
+import doctorFemale1 from '@/assets/doctor-female-1.jpg';
+import doctorFemale2 from '@/assets/doctor-female-2.jpg';
 
 const Telemedicine = () => {
   const [activeTab, setActiveTab] = useState('video');
-
-  const onlineDoctors = [
-    {
-      id: 1,
-      name: 'د. أحمد بن علي',
-      specialty: 'طبيب عام',
-      rating: 4.9,
-      experience: '12 سنة',
-      price: '2000 دج',
-      isOnline: true,
-      nextAvailable: 'متاح الآن',
+  const { getDoctors } = useAdmin();
+  
+  const allDoctors = getDoctors();
+  
+  // Map image paths to imported images
+  const imageMap: Record<string, string> = {
+    '/src/assets/doctor-male-1.jpg': doctorMale1,
+    '/src/assets/doctor-male-2.jpg': doctorMale2,
+    '/src/assets/doctor-female-1.jpg': doctorFemale1,
+    '/src/assets/doctor-female-2.jpg': doctorFemale2,
+  };
+  
+  // تصفية الأطباء الذين يقدمون خدمة الطب عن بعد
+  const onlineDoctors = allDoctors
+    .filter(doc => doc.specialties?.includes('طب عن بعد'))
+    .map(doc => ({
+      id: doc.id,
+      name: doc.name,
+      specialty: doc.specialty,
+      rating: doc.rating,
+      experience: doc.experience,
+      price: doc.price,
+      isOnline: doc.nextAvailable.includes('متاح الآن') || doc.nextAvailable.includes('اليوم'),
+      nextAvailable: doc.nextAvailable,
       languages: ['عربي', 'فرنسي'],
-      image: '/placeholder.svg'
-    },
-    {
-      id: 2,
-      name: 'د. فاطمة محمدي',
-      specialty: 'طبيبة نفسية',
-      rating: 4.8,
-      experience: '8 سنوات',
-      price: '2500 دج',
-      isOnline: true,
-      nextAvailable: 'متاح الآن',
-      languages: ['عربي', 'إنجليزي'],
-      image: '/placeholder.svg'
-    },
-    {
-      id: 3,
-      name: 'د. محمد العربي',
-      specialty: 'طبيب جلدية',
-      rating: 4.7,
-      experience: '15 سنة',
-      price: '3000 دج',
-      isOnline: false,
-      nextAvailable: 'غداً 10:00 ص',
-      languages: ['عربي'],
-      image: '/placeholder.svg'
-    }
-  ];
+      image: imageMap[doc.image] || doc.image
+    }));
 
   const features = [
     {
