@@ -5,6 +5,7 @@ import { defaultClinics, Clinic } from '@/data/clinics';
 import carelinkLogo from '@/assets/carelink-logo.png';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { initializeDatabase } from '@/lib/initDatabase';
 
 export interface SplashScreenSettings {
   logoUrl: string;
@@ -58,8 +59,18 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const authStatus = localStorage.getItem(ADMIN_AUTH_KEY);
     setIsAdminAuthenticated(authStatus === 'true');
 
-    // Load data from database
-    loadFromDatabase();
+    // Initialize and load data from database
+    const initAndLoad = async () => {
+      const result = await initializeDatabase();
+      if (result.success) {
+        await loadFromDatabase();
+      } else {
+        console.error('Failed to initialize database:', result.error);
+        toast.error('فشل تهيئة قاعدة البيانات. يرجى التأكد من إنشاء الجداول في Cloud → Database');
+      }
+    };
+
+    initAndLoad();
 
     // Setup realtime subscriptions
     const channel = supabase
@@ -121,12 +132,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       
       if (siteData) {
         setIsSiteActive(siteData.setting_value as boolean);
-      } else {
-        // Initialize with default
-        await supabase.from('admin_settings').insert({
-          setting_key: 'site_active',
-          setting_value: true
-        });
       }
 
       // Load wilayas status
@@ -138,13 +143,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       
       if (wilayasData) {
         setActiveWilayas(wilayasData.setting_value as Wilaya[]);
-      } else {
-        // Initialize with defaults
-        await supabase.from('admin_settings').insert({
-          setting_key: 'wilayas_status',
-          setting_value: WILAYAS
-        });
-        setActiveWilayas(WILAYAS);
       }
 
       // Load splash screen settings
@@ -156,12 +154,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       
       if (splashData) {
         setSplashScreenSettings(splashData.setting_value as SplashScreenSettings);
-      } else {
-        // Initialize with defaults
-        await supabase.from('admin_settings').insert({
-          setting_key: 'splash_screen',
-          setting_value: DEFAULT_SPLASH_SETTINGS
-        });
       }
     } catch (error) {
       console.error('Error loading settings:', error);
@@ -179,15 +171,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       if (data && data.length > 0) {
         setDoctors(data as Doctor[]);
-      } else {
-        // Initialize with defaults
-        const { error: insertError } = await supabase
-          .from('doctors')
-          .insert(defaultDoctors);
-        
-        if (!insertError) {
-          setDoctors(defaultDoctors);
-        }
       }
     } catch (error) {
       console.error('Error loading doctors:', error);
@@ -205,15 +188,6 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       if (data && data.length > 0) {
         setClinics(data as Clinic[]);
-      } else {
-        // Initialize with defaults
-        const { error: insertError } = await supabase
-          .from('clinics')
-          .insert(defaultClinics);
-        
-        if (!insertError) {
-          setClinics(defaultClinics);
-        }
       }
     } catch (error) {
       console.error('Error loading clinics:', error);
