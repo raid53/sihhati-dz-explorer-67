@@ -13,23 +13,23 @@ import ClinicsManagement from '@/components/ClinicsManagement';
 import SplashScreenManagement from '@/components/SplashScreenManagement';
 
 const AdminDashboard = () => {
-  const { isAdminAuthenticated, isSiteActive, activeWilayas, logout, toggleSiteStatus, toggleWilaya } = useAdmin();
+  const { isAdmin, isSiteActive, activeWilayas, logout, toggleSiteStatus, toggleWilaya } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (!isAdminAuthenticated) {
-      navigate('/admin/login');
+    if (!isAdmin) {
+      navigate('/auth');
     }
-  }, [isAdminAuthenticated, navigate]);
+  }, [isAdmin, navigate]);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     toast({
       title: "تم تسجيل الخروج",
       description: "تم تسجيل الخروج بنجاح",
     });
-    navigate('/admin/login');
+    navigate('/auth');
   };
 
   const handleToggleSite = () => {
@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const enabledCount = activeWilayas.filter(w => w.enabled).length;
 
-  if (!isAdminAuthenticated) {
+  if (!isAdmin) {
     return null;
   }
 

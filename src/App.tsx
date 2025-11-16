@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import { useAdmin } from "./contexts/AdminContext";
 import SplashScreen from "./components/SplashScreen";
 import MaintenancePage from "./pages/MaintenancePage";
+import Auth from "./pages/Auth";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
@@ -59,6 +60,9 @@ const App = () => {
       <Toaster />
       <Sonner />
       <Routes>
+        {/* Auth Routes */}
+        <Route path="/auth" element={<Auth />} />
+        
         {/* Admin Routes - Always Accessible */}
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route 

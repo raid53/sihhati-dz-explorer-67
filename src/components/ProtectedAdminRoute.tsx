@@ -8,16 +8,16 @@ interface ProtectedAdminRouteProps {
 }
 
 const ProtectedAdminRoute: React.FC<ProtectedAdminRouteProps> = ({ children }) => {
-  const { isAdminAuthenticated } = useAdmin();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAdminAuthenticated) {
-      navigate('/admin/login');
+    if (!isAdmin) {
+      navigate('/auth');
     }
-  }, [isAdminAuthenticated, navigate]);
+  }, [isAdmin, navigate]);
 
-  if (!isAdminAuthenticated) {
+  if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <LoadingSpinner size="lg" />
