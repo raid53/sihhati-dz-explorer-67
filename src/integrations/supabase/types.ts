@@ -14,7 +14,138 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_settings: {
+        Row: {
+          created_at: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      clinics: {
+        Row: {
+          address: string | null
+          created_at: string | null
+          description: string | null
+          distance: string | null
+          doctors: string[] | null
+          hours: string | null
+          id: number
+          image: string
+          location: string
+          name: string
+          next_available: string | null
+          phone: string
+          price: string | null
+          rating: number
+          reviews: number | null
+          services: string[]
+          specialty: string
+          type: string
+          verified: boolean | null
+        }
+        Insert: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          distance?: string | null
+          doctors?: string[] | null
+          hours?: string | null
+          id?: number
+          image: string
+          location: string
+          name: string
+          next_available?: string | null
+          phone: string
+          price?: string | null
+          rating: number
+          reviews?: number | null
+          services: string[]
+          specialty: string
+          type: string
+          verified?: boolean | null
+        }
+        Update: {
+          address?: string | null
+          created_at?: string | null
+          description?: string | null
+          distance?: string | null
+          doctors?: string[] | null
+          hours?: string | null
+          id?: number
+          image?: string
+          location?: string
+          name?: string
+          next_available?: string | null
+          phone?: string
+          price?: string | null
+          rating?: number
+          reviews?: number | null
+          services?: string[]
+          specialty?: string
+          type?: string
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
+      doctors: {
+        Row: {
+          created_at: string | null
+          experience: string
+          id: number
+          image: string
+          location: string
+          name: string
+          next_available: string | null
+          price: number
+          rating: number
+          reviews: number | null
+          specialty: string
+        }
+        Insert: {
+          created_at?: string | null
+          experience: string
+          id?: number
+          image: string
+          location: string
+          name: string
+          next_available?: string | null
+          price: number
+          rating: number
+          reviews?: number | null
+          specialty: string
+        }
+        Update: {
+          created_at?: string | null
+          experience?: string
+          id?: number
+          image?: string
+          location?: string
+          name?: string
+          next_available?: string | null
+          price?: number
+          rating?: number
+          reviews?: number | null
+          specialty?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
