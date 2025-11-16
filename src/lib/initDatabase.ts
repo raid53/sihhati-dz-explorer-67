@@ -30,7 +30,7 @@ export const initializeDatabase = async () => {
       console.log('Initializing site status...');
       await supabase.from('admin_settings').insert({
         setting_key: 'site_active',
-        setting_value: true
+        setting_value: { active: true }
       });
     }
 
@@ -42,9 +42,14 @@ export const initializeDatabase = async () => {
 
     if (!wilayasStatus) {
       console.log('Initializing wilayas...');
+      const wilayasObject = WILAYAS.reduce((acc, wilaya) => {
+        acc[wilaya.nameAr] = wilaya.enabled;
+        return acc;
+      }, {} as Record<string, boolean>);
+      
       await supabase.from('admin_settings').insert({
         setting_key: 'wilayas_status',
-        setting_value: WILAYAS
+        setting_value: { wilayas: wilayasObject }
       });
     }
 
@@ -58,7 +63,11 @@ export const initializeDatabase = async () => {
       console.log('Initializing splash screen...');
       await supabase.from('admin_settings').insert({
         setting_key: 'splash_screen',
-        setting_value: { logoUrl: carelinkLogo }
+        setting_value: { 
+          enabled: true,
+          duration: 3000,
+          logoUrl: carelinkLogo 
+        }
       });
     }
 
@@ -70,7 +79,20 @@ export const initializeDatabase = async () => {
 
     if (!existingDoctors || existingDoctors.length === 0) {
       console.log('Initializing doctors...');
-      await supabase.from('doctors').insert(defaultDoctors);
+      const doctorsToInsert = defaultDoctors.map(doctor => ({
+        id: doctor.id,
+        name: doctor.name,
+        specialty: doctor.specialty,
+        image: doctor.image,
+        rating: doctor.rating,
+        reviews: doctor.reviews,
+        experience: doctor.experience,
+        location: doctor.location,
+        price: doctor.price,
+        next_available: doctor.nextAvailable
+      }));
+      
+      await supabase.from('doctors').insert(doctorsToInsert);
     }
 
     // Initialize clinics if they don't exist
@@ -81,7 +103,28 @@ export const initializeDatabase = async () => {
 
     if (!existingClinics || existingClinics.length === 0) {
       console.log('Initializing clinics...');
-      await supabase.from('clinics').insert(defaultClinics);
+      const clinicsToInsert = defaultClinics.map(clinic => ({
+        id: clinic.id,
+        name: clinic.name,
+        type: clinic.type,
+        specialty: clinic.specialty,
+        image: clinic.image,
+        rating: clinic.rating,
+        reviews: clinic.reviews,
+        location: clinic.location,
+        phone: clinic.phone || '',
+        services: clinic.services || [],
+        distance: clinic.distance,
+        next_available: clinic.nextAvailable,
+        price: clinic.price,
+        verified: clinic.verified,
+        doctors: clinic.doctors || [],
+        address: clinic.address || '',
+        hours: clinic.hours || '',
+        description: clinic.description || ''
+      }));
+      
+      await supabase.from('clinics').insert(clinicsToInsert);
     }
 
     console.log('Database initialization completed successfully!');
