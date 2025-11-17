@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Menu, X, Phone, MapPin, Clock, MessageSquare, Brain, User, LogOut, Info, Handshake, Pill, ChevronDown, MoreHorizontal } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import AuthModal from './AuthModal';
 import ProviderRegistrationModal from './ProviderRegistrationModal';
 import ChatSystem from './ChatSystem';
 import ThemeToggle from './ThemeToggle';
@@ -15,10 +14,8 @@ const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isChatMinimized, setIsChatMinimized] = useState(false);
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isProviderModalOpen, setIsProviderModalOpen] = useState(false);
   const [isContactInfoOpen, setIsContactInfoOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   
   const { user, logout, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -41,9 +38,8 @@ const Header: React.FC = () => {
     setIsChatMinimized(true);
   };
 
-  const handleAuthModalOpen = (mode: 'login' | 'register') => {
-    setAuthMode(mode);
-    setIsAuthModalOpen(true);
+  const handleAuthClick = () => {
+    navigate('/auth');
   };
 
   const handleLogout = () => {
@@ -301,13 +297,13 @@ const Header: React.FC = () => {
             <div className="flex items-center gap-3">
               <Button 
                 variant="outline" 
-                onClick={() => handleAuthModalOpen('login')}
+                onClick={handleAuthClick}
                 className="hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 font-medium"
               >
                 تسجيل الدخول
               </Button>
               <Button 
-                onClick={() => handleAuthModalOpen('register')}
+                onClick={handleAuthClick}
                 className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 shadow-lg hover:shadow-xl hover:shadow-primary/25 transition-all duration-300 font-medium hover:scale-105"
               >
                 إنشاء حساب
@@ -404,10 +400,10 @@ const Header: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Button variant="outline" size="sm" onClick={() => handleAuthModalOpen('login')}>
+                  <Button variant="outline" size="sm" onClick={handleAuthClick}>
                     تسجيل الدخول
                   </Button>
-                  <Button size="sm" onClick={() => handleAuthModalOpen('register')}>
+                  <Button size="sm" onClick={handleAuthClick}>
                     إنشاء حساب
                   </Button>
                   <Button variant="secondary" size="sm" onClick={() => setIsProviderModalOpen(true)}>
@@ -421,13 +417,6 @@ const Header: React.FC = () => {
       )}
 
       {/* Modals */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        mode={authMode}
-        onModeChange={setAuthMode}
-      />
-
       <ProviderRegistrationModal
         isOpen={isProviderModalOpen}
         onClose={() => setIsProviderModalOpen(false)}
