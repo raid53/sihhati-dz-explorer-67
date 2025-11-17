@@ -26,7 +26,10 @@ export const initializeDatabase = async () => {
           email: adminEmail,
           password: adminPassword,
           options: {
-            emailRedirectTo: `${window.location.origin}/admin/dashboard`
+            emailRedirectTo: `${window.location.origin}/admin/dashboard`,
+            data: {
+              email_confirm: true
+            }
           }
         });
 
