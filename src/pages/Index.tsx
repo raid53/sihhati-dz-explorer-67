@@ -16,13 +16,21 @@ import DeliveryService from '@/components/DeliveryService';
 import FloatingDeliveryBubble from '@/components/FloatingDeliveryBubble';
 import FloatingTelemedicineButton from '@/components/FloatingTelemedicineButton';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdmin } from '@/contexts/AdminContext';
 import { Link } from 'react-router-dom';
+import MaintenancePage from '@/pages/MaintenancePage';
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
+  const { isSiteActive } = useAdmin();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
+
+  // Show maintenance page if site is not active
+  if (!isSiteActive) {
+    return <MaintenancePage />;
+  }
 
   // Listen for manual open events
   useEffect(() => {

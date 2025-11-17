@@ -7,59 +7,26 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useAdmin } from '@/contexts/AdminContext';
 import clinic1 from '@/assets/clinic-1.jpg';
 import clinic2 from '@/assets/clinic-2.jpg';
+import hospital1 from '@/assets/hospital-1.jpg';
+import hospital2 from '@/assets/hospital-2.jpg';
 
 const Clinics = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const { getClinics } = useAdmin();
+  
+  const clinics = getClinics();
 
-  const clinics = [
-    {
-      id: 1,
-      name: 'عيادة الأمل الطبية',
-      specialty: 'طب عام',
-      location: 'الجزائر العاصمة',
-      rating: 4.8,
-      reviews: 124,
-      phone: '+213 21 123 456',
-      hours: 'السبت-الخميس: 8:00-18:00',
-      image: clinic1
-    },
-    {
-      id: 2,
-      name: 'مركز الشفاء التخصصي',
-      specialty: 'أمراض القلب',
-      location: 'وهران',
-      rating: 4.9,
-      reviews: 89,
-      phone: '+213 41 789 012',
-      hours: 'الأحد-الخميس: 9:00-17:00',
-      image: clinic2
-    },
-    {
-      id: 3,
-      name: 'عيادة النور للأطفال',
-      specialty: 'طب الأطفال',
-      location: 'قسنطينة',
-      rating: 4.7,
-      reviews: 156,
-      phone: '+213 31 345 678',
-      hours: 'السبت-الخميس: 8:30-16:30',
-      image: clinic1
-    },
-    {
-      id: 4,
-      name: 'مركز غرداية الطبي',
-      specialty: 'الطب العام والتخصصات',
-      location: 'غرداية',
-      rating: 4.6,
-      reviews: 89,
-      phone: '+213 29 456 789',
-      hours: 'الأحد-الخميس: 8:00-17:00',
-      image: clinic2
-    }
-  ];
+  // Map image paths to imported images
+  const imageMap: Record<string, string> = {
+    '/src/assets/clinic-1.jpg': clinic1,
+    '/src/assets/clinic-2.jpg': clinic2,
+    '/src/assets/hospital-1.jpg': hospital1,
+    '/src/assets/hospital-2.jpg': hospital2,
+  };
 
   const filteredClinics = clinics.filter(clinic =>
     clinic.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -101,7 +68,7 @@ const Clinics = () => {
                   <CardHeader>
                     <div className="aspect-video rounded-lg mb-4 overflow-hidden">
                       <img 
-                        src={clinic.image} 
+                        src={imageMap[clinic.image] || clinic.image} 
                         alt={clinic.name}
                         className="w-full h-full object-cover"
                       />
@@ -119,18 +86,22 @@ const Clinics = () => {
                       <div className="flex items-center">
                         <Star className="w-4 h-4 text-yellow-500 fill-current ml-1" />
                         <span className="font-medium">{clinic.rating}</span>
-                        <span className="text-muted-foreground mr-1">({clinic.reviews} تقييم)</span>
+                        <span className="text-muted-foreground mr-1">({clinic.reviews || 0} تقييم)</span>
                       </div>
                       
-                      <div className="flex items-center text-muted-foreground">
-                        <Phone className="w-4 h-4 ml-2" />
-                        <span>{clinic.phone}</span>
-                      </div>
+                      {clinic.phone && (
+                        <div className="flex items-center text-muted-foreground">
+                          <Phone className="w-4 h-4 ml-2" />
+                          <span>{clinic.phone}</span>
+                        </div>
+                      )}
                       
-                      <div className="flex items-center text-muted-foreground">
-                        <Clock className="w-4 h-4 ml-2" />
-                        <span>{clinic.hours}</span>
-                      </div>
+                      {clinic.hours && (
+                        <div className="flex items-center text-muted-foreground">
+                          <Clock className="w-4 h-4 ml-2" />
+                          <span>{clinic.hours}</span>
+                        </div>
+                      )}
                       
                       <Button 
                         className="w-full mt-4"
