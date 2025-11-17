@@ -8,6 +8,38 @@ export const initializeDatabase = async () => {
   try {
     console.log('Starting database initialization...');
 
+    // Create admin account if it doesn't exist
+    try {
+      const adminEmail = 'soad@admin.com';
+      const adminPassword = 'soadgh010203';
+      
+      // Check if admin exists
+      const { data: existingAdmin } = await supabase
+        .from('user_roles')
+        .select('id')
+        .eq('role', 'admin')
+        .limit(1);
+
+      if (!existingAdmin || existingAdmin.length === 0) {
+        console.log('Creating admin account...');
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: adminEmail,
+          password: adminPassword,
+          options: {
+            emailRedirectTo: `${window.location.origin}/admin/dashboard`
+          }
+        });
+
+        if (signUpError && !signUpError.message.includes('already registered')) {
+          console.error('Admin account creation error:', signUpError);
+        } else {
+          console.log('Admin account created successfully!');
+        }
+      }
+    } catch (adminError) {
+      console.log('Admin account check/creation skipped:', adminError);
+    }
+
     // Check if tables exist by trying to query them
     const { error: settingsError } = await supabase
       .from('admin_settings')
