@@ -305,8 +305,13 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     try {
       const { error } = await supabase
         .from('admin_settings')
-        .update({ setting_value: { active: newStatus } })
-        .eq('setting_key', 'site_active');
+        .upsert({ 
+          setting_key: 'site_active',
+          setting_value: { active: newStatus },
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_key'
+        });
 
       if (error) throw error;
       toast.success(`تم ${newStatus ? 'تفعيل' : 'إيقاف'} الموقع بنجاح`);
@@ -336,8 +341,13 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
       const { error } = await supabase
         .from('admin_settings')
-        .update({ setting_value: { wilayas: wilayasObject } })
-        .eq('setting_key', 'wilayas_status');
+        .upsert({ 
+          setting_key: 'wilayas_status',
+          setting_value: { wilayas: wilayasObject },
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_key'
+        });
 
       if (error) throw error;
       toast.success('تم تحديث الولاية بنجاح');
@@ -438,8 +448,13 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     try {
       const { error } = await supabase
         .from('admin_settings')
-        .update({ setting_value: updatedSettings })
-        .eq('setting_key', 'splash_screen');
+        .upsert({ 
+          setting_key: 'splash_screen',
+          setting_value: updatedSettings,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_key'
+        });
 
       if (error) throw error;
       toast.success('تم تحديث إعدادات الواجهة الترحيبية بنجاح');
@@ -460,8 +475,13 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     try {
       const { error } = await supabase
         .from('admin_settings')
-        .update({ setting_value: DEFAULT_SPLASH_SETTINGS })
-        .eq('setting_key', 'splash_screen');
+        .upsert({ 
+          setting_key: 'splash_screen',
+          setting_value: DEFAULT_SPLASH_SETTINGS,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'setting_key'
+        });
 
       if (error) throw error;
       toast.success('تم إعادة تعيين الواجهة الترحيبية بنجاح');
