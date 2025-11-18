@@ -52,8 +52,11 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [splashScreenSettings, setSplashScreenSettings] = useState<SplashScreenSettings>(DEFAULT_SPLASH_SETTINGS);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log('[AdminContext] Initializing...');
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -83,15 +86,23 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
     // Initialize database and load data
     const initAndLoad = async () => {
+      setIsLoading(true);
       const result = await initializeDatabase();
       if (result.success) {
         await loadFromDatabase();
       } else {
         console.error('Failed to initialize database:', result.error);
       }
+      setIsLoading(false);
     };
 
     initAndLoad();
+
+    // Setup polling as fallback (every 10 seconds)
+    const pollingInterval = setInterval(() => {
+      console.log('[AdminContext] Polling for updates...');
+      loadFromDatabase();
+    }, 10000);
 
     // Setup realtime subscriptions
     const channel = supabase
@@ -139,6 +150,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     return () => {
       subscription.unsubscribe();
       supabase.removeChannel(channel);
+      clearInterval(pollingInterval);
     };
   }, []);
 
@@ -165,9 +177,17 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   const loadFromDatabase = async () => {
-    await loadSettingsFromDB();
-    await loadDoctorsFromDB();
-    await loadClinicsFromDB();
+    console.log('[AdminContext] Loading all data from database...');
+    try {
+      await Promise.all([
+        loadSettingsFromDB(),
+        loadDoctorsFromDB(),
+        loadClinicsFromDB()
+      ]);
+      console.log('[AdminContext] All data loaded successfully');
+    } catch (error) {
+      console.error('[AdminContext] Error loading data:', error);
+    }
   };
 
   const loadSettingsFromDB = async () => {
@@ -384,6 +404,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
 
+    console.log('[AdminContext] Updating doctor:', id, updatedData);
+
     const updatedDoctors = doctors.map(doctor =>
       doctor.id === id ? { ...doctor, ...updatedData } : doctor
     );
@@ -398,12 +420,16 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (updatedData.price !== undefined) dbData.price = updatedData.price;
       if (updatedData.nextAvailable !== undefined) dbData.next_available = updatedData.nextAvailable;
 
-      const { error } = await supabase
+      console.log('[AdminContext] Saving doctor to DB:', dbData);
+
+      const { data, error } = await supabase
         .from('doctors')
         .update(dbData)
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
       if (error) throw error;
+      console.log('[AdminContext] Doctor saved successfully:', data);
       toast.success('تم تحديث بيانات الطبيب بنجاح');
     } catch (error) {
       console.error('Error updating doctor:', error);
@@ -421,6 +447,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       return;
     }
 
+    console.log('[AdminContext] Updating clinic:', id, updatedData);
+
     const updatedClinics = clinics.map(clinic =>
       clinic.id === id ? { ...clinic, ...updatedData } : clinic
     );
@@ -436,12 +464,16 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (updatedData.services !== undefined) dbData.services = updatedData.services;
       if (updatedData.nextAvailable !== undefined) dbData.next_available = updatedData.nextAvailable;
 
-      const { error } = await supabase
+      console.log('[AdminContext] Saving clinic to DB:', dbData);
+
+      const { data, error } = await supabase
         .from('clinics')
         .update(dbData)
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
       if (error) throw error;
+      console.log('[AdminContext] Clinic saved successfully:', data);
       toast.success('تم تحديث بيانات العيادة بنجاح');
     } catch (error) {
       console.error('Error updating clinic:', error);
