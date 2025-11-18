@@ -65,7 +65,7 @@ export const initializeDatabase = async () => {
       console.log('Initializing site status...');
       await supabase.from('admin_settings').insert({
         setting_key: 'site_active',
-        setting_value: { active: true }
+        setting_value: true
       });
     }
 
