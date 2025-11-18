@@ -103,7 +103,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           schema: 'public',
           table: 'admin_settings'
         },
-        () => {
+        (payload) => {
+          console.log('[Realtime] Admin settings changed:', payload);
           loadSettingsFromDB();
         }
       )
@@ -114,7 +115,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           schema: 'public',
           table: 'doctors'
         },
-        () => {
+        (payload) => {
+          console.log('[Realtime] Doctors changed:', payload.eventType);
           loadDoctorsFromDB();
         }
       )
@@ -125,11 +127,14 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           schema: 'public',
           table: 'clinics'
         },
-        () => {
+        (payload) => {
+          console.log('[Realtime] Clinics changed:', payload.eventType);
           loadClinicsFromDB();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('[Realtime] Subscription status:', status);
+      });
 
     return () => {
       subscription.unsubscribe();
@@ -167,6 +172,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const loadSettingsFromDB = async () => {
     try {
+      console.log('[AdminContext] Loading settings from DB...');
+      
       // Load site status
       const { data: siteData } = await supabase
         .from('admin_settings')
@@ -176,7 +183,12 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       
       if (siteData && siteData.setting_value) {
         const value = siteData.setting_value as any;
-        setIsSiteActive(value.active !== undefined ? value.active : value);
+        const activeStatus = typeof value === 'boolean' ? value : value.active;
+        console.log('[AdminContext] Site status from DB:', activeStatus);
+        setIsSiteActive(activeStatus);
+      } else {
+        console.log('[AdminContext] No site status found in DB, using default (true)');
+        setIsSiteActive(true);
       }
 
       // Load wilayas status
@@ -189,6 +201,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (wilayasData && wilayasData.setting_value) {
         const wilayasObj = (wilayasData.setting_value as any).wilayas;
         if (wilayasObj) {
+          console.log('[AdminContext] Wilayas from DB:', Object.keys(wilayasObj).length);
           const updatedWilayas = WILAYAS.map(w => ({
             ...w,
             enabled: wilayasObj[w.nameAr] !== undefined ? wilayasObj[w.nameAr] : w.enabled
@@ -222,6 +235,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (error) throw error;
 
       if (data && data.length > 0) {
+        console.log('[AdminContext] Loaded doctors from DB:', data.length);
         const mappedDoctors = data.map(d => ({
           id: d.id,
           name: d.name,
@@ -251,6 +265,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (error) throw error;
 
       if (data && data.length > 0) {
+        console.log('[AdminContext] Loaded clinics from DB:', data.length);
         const mappedClinics = data.map(c => ({
           id: c.id,
           name: c.name,
@@ -300,6 +315,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
 
     const newStatus = !isSiteActive;
+    console.log('[AdminContext] Toggling site status to:', newStatus);
     setIsSiteActive(newStatus);
     
     try {
@@ -307,13 +323,14 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         .from('admin_settings')
         .upsert({ 
           setting_key: 'site_active',
-          setting_value: { active: newStatus },
+          setting_value: newStatus,
           updated_at: new Date().toISOString()
         }, {
           onConflict: 'setting_key'
         });
 
       if (error) throw error;
+      console.log('[AdminContext] Site status saved to DB:', newStatus);
       toast.success(`تم ${newStatus ? 'تفعيل' : 'إيقاف'} الموقع بنجاح`);
     } catch (error) {
       console.error('Error updating site status:', error);
