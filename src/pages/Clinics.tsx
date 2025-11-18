@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Star, Clock, Phone } from 'lucide-react';
 import Header from '@/components/Header';
@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useAdmin } from '@/contexts/AdminContext';
+import { DataRefreshButton } from '@/components/DataRefreshButton';
 import clinic1 from '@/assets/clinic-1.jpg';
 import clinic2 from '@/assets/clinic-2.jpg';
 import hospital1 from '@/assets/hospital-1.jpg';
@@ -19,6 +20,11 @@ const Clinics = () => {
   const { getClinics } = useAdmin();
   
   const clinics = getClinics();
+
+  // Reload data on mount to ensure fresh data
+  useEffect(() => {
+    console.log('[Clinics] Component mounted, clinics count:', clinics.length);
+  }, []);
 
   // Map image paths to imported images
   const imageMap: Record<string, string> = {
@@ -47,7 +53,7 @@ const Clinics = () => {
               اعثر على أفضل العيادات الطبية في جميع أنحاء الجزائر
             </p>
             
-            <div className="max-w-md mx-auto relative">
+            <div className="max-w-md mx-auto relative mb-4">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 placeholder="ابحث عن عيادة أو تخصص..."
@@ -56,6 +62,8 @@ const Clinics = () => {
                 className="pr-10 h-12"
               />
             </div>
+            
+            <DataRefreshButton />
           </div>
         </section>
 

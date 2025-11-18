@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, MapPin, Star, Award, Calendar } from 'lucide-react';
 import Header from '@/components/Header';
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAdmin } from '@/contexts/AdminContext';
+import { DataRefreshButton } from '@/components/DataRefreshButton';
 import doctorFemale1 from '@/assets/doctor-female-1.jpg';
 import doctorMale1 from '@/assets/doctor-male-1.jpg';
 import doctorMale2 from '@/assets/doctor-male-2.jpg';
@@ -20,6 +21,11 @@ const Doctors = () => {
   const { getDoctors } = useAdmin();
   
   const doctors = getDoctors();
+
+  // Log on mount
+  useEffect(() => {
+    console.log('[Doctors] Component mounted, doctors count:', doctors.length);
+  }, []);
 
   // Map image paths to imported images
   const imageMap: Record<string, string> = {
@@ -48,7 +54,7 @@ const Doctors = () => {
               احجز موعدك مع أفضل الأطباء في الجزائر
             </p>
             
-            <div className="max-w-md mx-auto relative">
+            <div className="max-w-md mx-auto relative mb-4">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 placeholder="ابحث عن طبيب أو تخصص..."
@@ -57,6 +63,8 @@ const Doctors = () => {
                 className="pr-10 h-12"
               />
             </div>
+            
+            <DataRefreshButton />
           </div>
         </section>
 
