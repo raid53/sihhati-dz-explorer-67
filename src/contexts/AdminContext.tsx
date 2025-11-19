@@ -201,15 +201,16 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         .eq('setting_key', 'site_active')
         .maybeSingle();
       
-      if (siteData && siteData.setting_value) {
+      if (siteData) {
         const value = siteData.setting_value as any;
-        const activeStatus = typeof value === 'boolean' ? value : value.active;
-        console.log('[AdminContext] Site status from DB:', activeStatus);
+        const activeStatus = typeof value === 'boolean' ? value : value?.active ?? true;
+        console.log('[AdminContext] Site status from DB:', activeStatus, 'raw value:', value);
         setIsSiteActive(activeStatus);
       } else {
         console.log('[AdminContext] No site status found in DB, using default (true)');
         setIsSiteActive(true);
       }
+
 
       // Load wilayas status
       const { data: wilayasData } = await supabase
