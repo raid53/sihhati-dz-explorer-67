@@ -22,15 +22,9 @@ import MaintenancePage from '@/pages/MaintenancePage';
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
-  const { isSiteActive } = useAdmin();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
   const [disclaimerOpen, setDisclaimerOpen] = useState(false);
-
-  // Show maintenance page if site is not active
-  if (!isSiteActive) {
-    return <MaintenancePage />;
-  }
 
   // Listen for manual open events
   useEffect(() => {
