@@ -17,7 +17,7 @@ const DoctorManagement: React.FC = () => {
     specialty: '',
     experience: '',
     location: '',
-    price: '',
+    price: 0,
     nextAvailable: '',
   });
 
@@ -29,8 +29,8 @@ const DoctorManagement: React.FC = () => {
         specialty: doctor.specialty,
         experience: doctor.experience,
         location: doctor.location,
-        price: doctor.price,
-        nextAvailable: doctor.nextAvailable,
+        price: typeof doctor.price === 'string' ? parseInt(doctor.price.replace(/[^\d]/g, '')) || 0 : doctor.price,
+        nextAvailable: doctor.nextAvailable || '',
       });
       setEditingId(doctorId);
     }
@@ -39,7 +39,10 @@ const DoctorManagement: React.FC = () => {
   const handleSave = () => {
     if (!editingId) return;
     
-    updateDoctor(editingId, editForm);
+    updateDoctor(editingId, {
+      ...editForm,
+      price: editForm.price as any
+    });
     setEditingId(null);
     toast({
       title: "تم التحديث بنجاح",
@@ -54,7 +57,7 @@ const DoctorManagement: React.FC = () => {
       specialty: '',
       experience: '',
       location: '',
-      price: '',
+      price: 0,
       nextAvailable: '',
     });
   };
@@ -111,11 +114,12 @@ const DoctorManagement: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor={`price-${doctor.id}`}>السعر</Label>
+                      <Label htmlFor={`price-${doctor.id}`}>السعر (دج)</Label>
                       <Input
                         id={`price-${doctor.id}`}
+                        type="number"
                         value={editForm.price}
-                        onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                        onChange={(e) => setEditForm({ ...editForm, price: parseInt(e.target.value) || 0 })}
                         className="text-right"
                       />
                     </div>
@@ -156,7 +160,7 @@ const DoctorManagement: React.FC = () => {
                       </div>
                       <div>
                         <span className="font-medium">السعر: </span>
-                        <span className="text-muted-foreground">{doctor.price}</span>
+                        <span className="text-muted-foreground">{typeof doctor.price === 'number' ? `${doctor.price} دج` : doctor.price}</span>
                       </div>
                       <div>
                         <span className="font-medium">الموعد القادم: </span>
