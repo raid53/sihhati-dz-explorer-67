@@ -128,9 +128,6 @@ const Header: React.FC = () => {
               <DropdownMenuItem onClick={() => navigate('/medical-records')} className="p-3 rounded-xl hover:bg-accent/20 transition-all duration-300 group cursor-pointer">
                 <span className="font-medium">السجلات الطبية</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/insurance')} className="p-3 rounded-xl hover:bg-primary/5 transition-all duration-300 group cursor-pointer">
-                <span className="font-medium">التأمين الصحي</span>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 

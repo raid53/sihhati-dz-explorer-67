@@ -33,7 +33,7 @@ import HomeCare from "./pages/HomeCare";
 import AddictionCenters from "./pages/AddictionCenters";
 import LabTests from "./pages/LabTests";
 import MedicalRecords from "./pages/MedicalRecords";
-import Insurance from "./pages/Insurance";
+
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
@@ -96,7 +96,7 @@ const App = () => {
         <Route path="/addiction-centers" element={<AddictionCenters />} />
         <Route path="/lab-tests" element={<LabTests />} />
         <Route path="/medical-records" element={<MedicalRecords />} />
-        <Route path="/insurance" element={<Insurance />} />
+        
         <Route path="/about" element={<About />} />
         <Route path="/support" element={<Support />} />
         <Route path="/privacy" element={<Privacy />} />

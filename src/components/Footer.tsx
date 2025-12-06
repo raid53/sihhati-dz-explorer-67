@@ -83,7 +83,7 @@ const Footer = () => {
                 <li><a href="/home-care" className="text-muted-foreground hover:text-primary transition-colors">التمريض المنزلي</a></li>
                 <li><a href="/lab-tests" className="text-muted-foreground hover:text-primary transition-colors">التحاليل الطبية</a></li>
                 <li><a href="/medical-records" className="text-muted-foreground hover:text-primary transition-colors">السجلات الطبية</a></li>
-                <li><a href="/insurance" className="text-muted-foreground hover:text-primary transition-colors">التأمين الصحي</a></li>
+                
               </ul>
             </div>
 
